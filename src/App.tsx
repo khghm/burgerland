@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Product, CartItem } from './types';
 import { products, categories, testimonials, IMG_HERO } from './data';
+import { useStore } from './context/StoreContext';
+import { AdminRouter } from './components/AdminPanel';
 
 const formatPrice = (price: number) => new Intl.NumberFormat('fa-IR').format(price);
 
@@ -623,7 +625,7 @@ const Footer: React.FC = () => (
     </div>
     <div className="border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-gray-600 text-xs">© ۱۴۰۵ برگرلند. تمامی حقوق محفوظ است.</p>
+        <p className="text-gray-600 text-xs">© ۱۴۰۵ برگرلند. تمامی حقوق محفوظ است. <a href="#admin" className="text-orange-500 hover:text-orange-400 mr-2">پنل مدیریت</a></p>
         <div className="flex items-center gap-2"><div className="bg-white/5 px-3 py-1.5 rounded-lg text-xs text-gray-400 border border-white/10">زرین‌پال</div><div className="bg-white/5 px-3 py-1.5 rounded-lg text-xs text-gray-400 border border-white/10">پی‌پینگ</div></div>
       </div>
     </div>
@@ -686,8 +688,26 @@ const App: React.FC = () => {
   const updateQuantity = (id: number, delta: number) => setCart((prev) => prev.map((i) => (i.id === id ? { ...i, quantity: i.quantity + delta } : i)).filter((i) => i.quantity > 0));
   const removeFromCart = (id: number) => setCart((prev) => prev.filter((i) => i.id !== id));
 
+  const { addOrder } = useStore();
+  
   const handleCheckout = () => {
-    setOrderNumber(Math.floor(100000 + Math.random() * 900000).toString());
+    const num = Math.floor(100000 + Math.random() * 900000).toString();
+    setOrderNumber(num);
+    
+    // Add order to store context (persists in localStorage, visible in admin panel)
+    const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    const deliveryFee = total > 500000 ? 0 : 35000;
+    addOrder({
+      items: [...cart],
+      total,
+      deliveryFee,
+      customerName: 'مشتری وب‌سایت',
+      customerPhone: '۰۹۱۲۰۰۰۰۰۰۰',
+      customerAddress: 'ثبت‌شده از وب‌سایت',
+      status: 'pending',
+      paymentStatus: 'paid',
+    });
+    
     setCartOpen(false);
     setOrderSuccess(true);
     setCart([]);
@@ -775,4 +795,18 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+// ─── App with Router ───────────────────────────────────────
+const AppWithRouter: React.FC = () => {
+  const [route, setRoute] = useState(() => window.location.hash);
+
+  useEffect(() => {
+    const handler = () => setRoute(window.location.hash);
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+
+  if (route === '#admin') return <AdminRouter />;
+  return <App />;
+};
+
+export default AppWithRouter;
