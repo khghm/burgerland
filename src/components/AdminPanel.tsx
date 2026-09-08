@@ -144,11 +144,11 @@ const DashboardOverview: React.FC = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Chart */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 overflow-hidden">
           <h3 className="text-lg font-bold text-white mb-4">درآمد ۷ روز اخیر</h3>
-          <div className="h-64">
+          <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={analytics.revenueByDay}>
+              <AreaChart data={analytics.revenueByDay} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
@@ -166,16 +166,16 @@ const DashboardOverview: React.FC = () => {
         </div>
 
         {/* Orders by Status */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 overflow-hidden">
           <h3 className="text-lg font-bold text-white mb-4">وضعیت سفارشات</h3>
-          <div className="h-64">
+          <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={5} dataKey="value">
                   {pieData.map((_, i) => <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />)}
                 </Pie>
                 <Tooltip contentStyle={{ background: 'rgba(0,0,0,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', direction: 'rtl' }} />
-                <Legend wrapperStyle={{ direction: 'rtl', fontSize: '12px' }} />
+                <Legend wrapperStyle={{ direction: 'rtl', fontSize: '12px', paddingTop: '20px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -184,14 +184,14 @@ const DashboardOverview: React.FC = () => {
 
       {/* Top Products & Recent Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+        <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 overflow-hidden">
           <h3 className="text-lg font-bold text-white mb-4">محصولات پرفروش</h3>
-          <div className="h-64">
+          <div className="w-full h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={analytics.topProducts} layout="vertical">
+              <BarChart data={analytics.topProducts} layout="vertical" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis type="number" stroke="rgba(255,255,255,0.3)" fontSize={10} />
-                <YAxis type="category" dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={10} width={100} />
+                <YAxis type="category" dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={10} width={120} />
                 <Tooltip contentStyle={{ background: 'rgba(0,0,0,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', direction: 'rtl' }} />
                 <Bar dataKey="count" fill="#f97316" radius={[0, 8, 8, 0]} />
               </BarChart>
@@ -632,78 +632,124 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
   };
 
   return (
-    <div className="min-h-screen bg-black flex">
+    <div className="min-h-screen bg-black">
       {/* Mobile Overlay */}
-      {sidebarOpen && <div className="fixed inset-0 bg-black/80 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden" 
+          onClick={() => setSidebarOpen(false)} 
+        />
+      )}
 
-      {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 right-0 h-full w-64 bg-gradient-to-b from-gray-900 to-black border-l border-white/10 z-50 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30">
-              <span className="text-white font-black text-lg">B</span>
-            </div>
-            <div>
-              <h1 className="font-black text-white text-sm">پنل مدیریت</h1>
-              <p className="text-[10px] text-gray-500">برگرلند</p>
+      {/* Sidebar - Fixed on mobile, sticky on desktop */}
+      <aside 
+        className={`
+          fixed top-0 right-0 h-screen w-64 
+          bg-gradient-to-b from-gray-900 to-black 
+          border-l border-white/10 
+          z-50 
+          transition-all duration-300 ease-in-out
+          lg:sticky lg:top-0
+          ${sidebarOpen ? 'translate-x-0' : 'translate-x-[100%] lg:translate-x-0'}
+        `}
+      >
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="p-6 border-b border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 flex-shrink-0">
+                <span className="text-white font-black text-lg">B</span>
+              </div>
+              <div className="min-w-0">
+                <h1 className="font-black text-white text-sm truncate">پنل مدیریت</h1>
+                <p className="text-[10px] text-gray-500">برگرلند</p>
+              </div>
             </div>
           </div>
 
-          <nav className="space-y-1">
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => { setActiveTab(tab.id); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-gradient-to-r from-orange-500/20 to-red-600/20 text-orange-400 border border-orange-500/30'
+                className={`
+                  w-full flex items-center gap-3 px-4 py-3 rounded-xl 
+                  text-sm font-bold transition-all duration-200
+                  ${activeTab === tab.id
+                    ? 'bg-gradient-to-r from-orange-500/20 to-red-600/20 text-orange-400 border border-orange-500/30 shadow-lg shadow-orange-500/10'
                     : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }
+                `}
               >
-                {tab.icon}
-                {tab.label}
+                <span className="flex-shrink-0">{tab.icon}</span>
+                <span className="truncate">{tab.label}</span>
               </button>
             ))}
           </nav>
-        </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10">
-          <button onClick={onBack} className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all mb-2">
-            {IC.back} بازگشت به سایت
-          </button>
-          <button onClick={onLogout} className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-all">
-            {IC.close} خروج
-          </button>
+          {/* Footer Actions */}
+          <div className="p-4 border-t border-white/10 space-y-2">
+            <button 
+              onClick={onBack} 
+              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+            >
+              {IC.back} 
+              <span>بازگشت به سایت</span>
+            </button>
+            <button 
+              onClick={onLogout} 
+              className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-red-400 hover:bg-red-500/10 transition-all"
+            >
+              {IC.close} 
+              <span>خروج</span>
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 min-h-screen">
+      <main className="lg:mr-64 min-h-screen">
         {/* Top Bar */}
-        <div className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-white/10 px-4 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
-              </button>
-              <h2 className="text-lg font-bold text-white">{tabs.find(t => t.id === activeTab)?.label}</h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 bg-green-500/10 text-green-400 px-3 py-1.5 rounded-lg border border-green-500/20 text-xs font-bold">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                آنلاین
+        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
+          <div className="px-4 lg:px-8 py-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <button 
+                  onClick={() => setSidebarOpen(true)} 
+                  className="lg:hidden w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-white hover:bg-white/10 transition-colors flex-shrink-0"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+                <h2 className="text-lg font-bold text-white truncate">
+                  {tabs.find(t => t.id === activeTab)?.label}
+                </h2>
               </div>
-              <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center text-white text-sm font-bold">
-                A
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <div className="hidden sm:flex items-center gap-2 bg-green-500/10 text-green-400 px-3 py-1.5 rounded-lg border border-green-500/20 text-xs font-bold">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span>آنلاین</span>
+                </div>
+                <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-orange-500/30">
+                  A
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content Area */}
         <div className="p-4 lg:p-8">
           <AnimatePresence mode="wait">
-            <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+            <motion.div 
+              key={activeTab} 
+              initial={{ opacity: 0, y: 10 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -10 }} 
+              transition={{ duration: 0.2 }}
+            >
               {renderContent()}
             </motion.div>
           </AnimatePresence>
