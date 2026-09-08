@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product, CartItem, Category } from './types';
 import { products, categories, testimonials, IMG_HERO } from './data';
@@ -7,7 +7,7 @@ import { products, categories, testimonials, IMG_HERO } from './data';
 const formatPrice = (price: number) =>
   new Intl.NumberFormat('fa-IR').format(price);
 
-// ─── Icons (SVG) ───────────────────────────────────────────
+// ─── Icons ─────────────────────────────────────────────────
 const Icons = {
   search: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@ const Icons = {
     </svg>
   ),
   heart: (
-    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
     </svg>
   ),
@@ -119,23 +119,25 @@ const Header: React.FC<{
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'glass shadow-lg shadow-black/5' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
+        scrolled ? 'glass-dark shadow-2xl shadow-black/50' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-11 h-11 bg-gradient-to-br from-brand-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30">
-                <span className="text-white font-black text-xl">B</span>
+            <div className="relative group">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 via-red-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/50 group-hover:shadow-orange-500/80 transition-all duration-500 group-hover:scale-110">
+                <span className="text-white font-black text-2xl">B</span>
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-black animate-pulse" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-black text-xl text-dark-900 leading-none">برگرلند</h1>
-              <p className="text-[10px] text-dark-400 font-medium tracking-wider">BURGER LAND</p>
+              <h1 className="font-black text-2xl bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent leading-none">
+                برگرلند
+              </h1>
+              <p className="text-[10px] text-white/40 font-medium tracking-[0.3em]">BURGER LAND</p>
             </div>
           </div>
 
@@ -147,9 +149,9 @@ const Header: React.FC<{
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="جستجوی غذا..."
-                className="w-full bg-dark-100/50 border border-transparent rounded-2xl py-3 px-5 pr-12 text-sm outline-none focus:bg-white focus:border-brand-200 focus:shadow-lg focus:shadow-brand-500/10 transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 px-5 pr-12 text-sm text-white placeholder-white/30 outline-none focus:bg-white/10 focus:border-orange-500/50 focus:shadow-lg focus:shadow-orange-500/10 transition-all duration-500"
               />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-400 group-focus-within:text-brand-500 transition-colors">
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-orange-400 transition-colors">
                 {Icons.search}
               </div>
             </div>
@@ -157,13 +159,13 @@ const Header: React.FC<{
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <button className="hidden md:flex items-center gap-2 text-sm font-medium text-dark-600 hover:text-dark-900 transition-colors px-3 py-2 rounded-xl hover:bg-dark-100/50">
+            <button className="hidden md:flex items-center gap-2 text-sm font-medium text-white/60 hover:text-white transition-colors px-4 py-2.5 rounded-xl hover:bg-white/5">
               {Icons.user}
               <span className="hidden xl:inline">حساب من</span>
             </button>
             <button
               onClick={onCartOpen}
-              className="relative flex items-center gap-2 bg-dark-900 hover:bg-dark-800 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl transition-all btn-press shadow-lg shadow-dark-900/20"
+              className="relative flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl transition-all btn-press shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50"
             >
               {Icons.cart}
               <span className="text-sm font-bold hidden sm:inline">سبد خرید</span>
@@ -173,7 +175,7 @@ const Header: React.FC<{
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-1.5 -left-1.5 w-5 h-5 bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg shadow-brand-500/50"
+                    className="absolute -top-2 -left-2 w-6 h-6 bg-amber-400 text-black text-[11px] font-black rounded-full flex items-center justify-center shadow-lg shadow-amber-400/50"
                   >
                     {cartCount}
                   </motion.span>
@@ -191,9 +193,9 @@ const Header: React.FC<{
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="جستجوی غذا..."
-              className="w-full bg-dark-100/50 border border-transparent rounded-2xl py-2.5 px-4 pr-10 text-sm outline-none focus:bg-white focus:border-brand-200 transition-all"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-2.5 px-4 pr-10 text-sm text-white placeholder-white/30 outline-none focus:border-orange-500/50 transition-all"
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-dark-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30">
               {Icons.search}
             </div>
           </div>
@@ -205,17 +207,23 @@ const Header: React.FC<{
 
 // ─── Hero Section ──────────────────────────────────────────
 const HeroSection: React.FC = () => (
-  <section className="relative min-h-screen flex items-center overflow-hidden bg-dark-950">
+  <section className="relative min-h-screen flex items-center overflow-hidden bg-black noise-overlay">
     {/* Background Image */}
     <div className="absolute inset-0">
       <img
         src={IMG_HERO}
         alt="Hero"
-        className="w-full h-full object-cover opacity-60"
+        className="w-full h-full object-cover opacity-50"
       />
-      <div className="absolute inset-0 bg-gradient-to-l from-dark-950 via-dark-950/70 to-dark-950/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-transparent to-dark-950/50" />
+      <div className="absolute inset-0 bg-gradient-to-l from-black via-black/60 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50" />
+      {/* Animated gradient overlay */}
+      <div className="absolute inset-0 gradient-mesh opacity-30" />
     </div>
+
+    {/* Floating orbs */}
+    <div className="absolute top-20 right-20 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl animate-float" />
+    <div className="absolute bottom-20 left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }} />
 
     {/* Content */}
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-0 w-full">
@@ -223,18 +231,18 @@ const HeroSection: React.FC = () => (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6"
+          transition={{ duration: 0.8 }}
+          className="inline-flex items-center gap-2 glass rounded-full px-5 py-2.5 mb-8"
         >
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-          <span className="text-white/90 text-sm font-medium">ارسال رایگان برای سفارش‌های بالای ۵۰۰ هزار تومان</span>
+          <span className="text-white/80 text-sm font-medium">ارسال رایگان برای سفارش‌های بالای ۵۰۰ هزار تومان</span>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-[1.1] mb-6"
+          transition={{ duration: 0.8, delay: 0.15 }}
+          className="text-5xl sm:text-6xl lg:text-8xl font-black text-white leading-[1.05] mb-8"
         >
           طعم واقعی
           <br />
@@ -244,8 +252,8 @@ const HeroSection: React.FC = () => (
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-lg text-white/70 leading-relaxed mb-8 max-w-lg"
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-lg text-white/60 leading-relaxed mb-10 max-w-lg"
         >
           با بهترین مواد اولیه و دستور پخت‌های اصیل، تجربه‌ای متفاوت از فست‌فود را به شما هدیه می‌دهیم. کیفیت، طعم و سرعت در یکجا.
         </motion.p>
@@ -253,19 +261,19 @@ const HeroSection: React.FC = () => (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.45 }}
           className="flex flex-col sm:flex-row gap-4"
         >
           <a
             href="#menu"
-            className="inline-flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold px-8 py-4 rounded-2xl transition-all btn-press shadow-xl shadow-brand-500/30 animate-pulse-glow"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-10 py-5 rounded-2xl transition-all btn-press shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 animate-pulse-glow text-lg"
           >
             مشاهده منو
             <span className="rotate-180">{Icons.arrow}</span>
           </a>
           <a
             href="#features"
-            className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold px-8 py-4 rounded-2xl border border-white/20 transition-all btn-press"
+            className="inline-flex items-center justify-center gap-2 glass hover:bg-white/10 text-white font-bold px-10 py-5 rounded-2xl transition-all btn-press text-lg"
           >
             چرا برگرلند؟
           </a>
@@ -275,20 +283,20 @@ const HeroSection: React.FC = () => (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid grid-cols-3 gap-6 mt-16 pt-8 border-t border-white/10"
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="grid grid-cols-3 gap-8 mt-20 pt-8 border-t border-white/10"
         >
           <div>
-            <p className="text-3xl lg:text-4xl font-black text-white">+۱۰</p>
-            <p className="text-sm text-white/50 mt-1">سال تجربه</p>
+            <p className="text-4xl lg:text-5xl font-black gradient-text">+۱۰</p>
+            <p className="text-sm text-white/40 mt-2">سال تجربه</p>
           </div>
           <div>
-            <p className="text-3xl lg:text-4xl font-black text-white">+۵۰K</p>
-            <p className="text-sm text-white/50 mt-1">مشتری راضی</p>
+            <p className="text-4xl lg:text-5xl font-black gradient-text">+۵۰K</p>
+            <p className="text-sm text-white/40 mt-2">مشتری راضی</p>
           </div>
           <div>
-            <p className="text-3xl lg:text-4xl font-black text-white">۴.۹</p>
-            <p className="text-sm text-white/50 mt-1">امتیاز کاربران</p>
+            <p className="text-4xl lg:text-5xl font-black gradient-text">۴.۹</p>
+            <p className="text-sm text-white/40 mt-2">امتیاز کاربران</p>
           </div>
         </motion.div>
       </div>
@@ -298,14 +306,14 @@ const HeroSection: React.FC = () => (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1 }}
+      transition={{ delay: 1.5 }}
       className="absolute bottom-8 left-1/2 -translate-x-1/2"
     >
-      <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-1">
+      <div className="w-7 h-12 border-2 border-white/20 rounded-full flex items-start justify-center p-2">
         <motion.div
-          animate={{ y: [0, 12, 0] }}
+          animate={{ y: [0, 16, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="w-1.5 h-1.5 bg-white rounded-full"
+          className="w-2 h-2 bg-orange-400 rounded-full"
         />
       </div>
     </motion.div>
@@ -315,30 +323,37 @@ const HeroSection: React.FC = () => (
 // ─── Features Section ──────────────────────────────────────
 const FeaturesSection: React.FC = () => {
   const features = [
-    { icon: Icons.leaf, title: 'مواد اولیه تازه', desc: 'تمامی مواد اولیه ما روزانه و از تأمین‌کنندگان معتبر تهیه می‌شود', color: 'from-emerald-500 to-teal-600' },
-    { icon: Icons.truck, title: 'ارسال سریع', desc: 'سفارش شما در کمتر از ۳۰ دقیقه آماده و ارسال می‌شود', color: 'from-brand-500 to-red-600' },
-    { icon: Icons.shield, title: 'ضمانت کیفیت', desc: 'در صورت عدم رضایت، هزینه شما بدون قید و شرط بازگردانده می‌شود', color: 'from-blue-500 to-indigo-600' },
-    { icon: Icons.heart, title: 'عشق به غذا', desc: 'با عشق و دقت تهیه شده تا بهترین تجربه را داشته باشید', color: 'from-pink-500 to-rose-600' },
+    { icon: Icons.leaf, title: 'مواد اولیه تازه', desc: 'تمامی مواد اولیه ما روزانه و از تأمین‌کنندگان معتبر تهیه می‌شود', gradient: 'from-emerald-500 to-teal-500' },
+    { icon: Icons.truck, title: 'ارسال سریع', desc: 'سفارش شما در کمتر از ۳۰ دقیقه آماده و ارسال می‌شود', gradient: 'from-orange-500 to-red-500' },
+    { icon: Icons.shield, title: 'ضمانت کیفیت', desc: 'در صورت عدم رضایت، هزینه شما بدون قید و شرط بازگردانده می‌شود', gradient: 'from-blue-500 to-indigo-500' },
+    { icon: Icons.heart, title: 'عشق به غذا', desc: 'با عشق و دقت تهیه شده تا بهترین تجربه را داشته باشید', gradient: 'from-pink-500 to-rose-500' },
   ];
 
   return (
-    <section id="features" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" className="py-24 bg-gradient-to-b from-black to-zinc-950 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((f, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group relative bg-dark-50 hover:bg-white rounded-3xl p-6 border border-dark-100 hover:border-transparent hover:shadow-2xl hover:shadow-black/5 transition-all duration-500"
+              className="group relative bg-white/5 hover:bg-white/10 rounded-3xl p-8 border border-white/5 hover:border-white/20 transition-all duration-700 hover-lift"
             >
-              <div className={`w-14 h-14 bg-gradient-to-br ${f.color} rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+              {/* Glow effect on hover */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-5 rounded-3xl transition-opacity duration-700`} />
+
+              <div className={`relative w-16 h-16 bg-gradient-to-br ${f.gradient} rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                 {f.icon}
               </div>
-              <h3 className="font-bold text-dark-900 text-lg mb-2">{f.title}</h3>
-              <p className="text-sm text-dark-500 leading-relaxed">{f.desc}</p>
+              <h3 className="relative font-black text-white text-xl mb-3">{f.title}</h3>
+              <p className="relative text-sm text-white/50 leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -359,18 +374,18 @@ const CategoryBar: React.FC<{
         key={cat.id}
         whileTap={{ scale: 0.95 }}
         onClick={() => onChange(cat.id)}
-        className={`relative flex items-center gap-3 px-5 py-3 rounded-2xl whitespace-nowrap transition-all duration-300 ${
+        className={`relative flex items-center gap-3 px-5 py-3.5 rounded-2xl whitespace-nowrap transition-all duration-500 ${
           active === cat.id
-            ? 'bg-dark-900 text-white shadow-xl shadow-dark-900/20'
-            : 'bg-white text-dark-600 hover:bg-dark-50 border border-dark-100'
+            ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-xl shadow-orange-500/30'
+            : 'bg-white/5 text-white/60 hover:bg-white/10 border border-white/10 hover:border-white/20'
         }`}
       >
-        <div className={`w-9 h-9 rounded-xl overflow-hidden ${active === cat.id ? 'ring-2 ring-brand-500 ring-offset-2 ring-offset-dark-900' : ''}`}>
+        <div className={`w-10 h-10 rounded-xl overflow-hidden ${active === cat.id ? 'ring-2 ring-white/30 ring-offset-2 ring-offset-orange-500' : ''}`}>
           <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
         </div>
         <span className="font-bold text-sm">{cat.name}</span>
         {active === cat.id && (
-          <span className="bg-brand-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+          <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
             {cat.count}
           </span>
         )}
@@ -392,15 +407,15 @@ const ProductCard: React.FC<{
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
-      className="group bg-white rounded-3xl overflow-hidden border border-dark-100 hover:border-dark-200 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500"
+      className="group bg-white/5 rounded-3xl overflow-hidden border border-white/5 hover:border-orange-500/30 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-700 hover-lift"
     >
       {/* Image */}
       <div
-        className="relative h-56 overflow-hidden cursor-pointer bg-dark-100"
+        className="relative h-60 overflow-hidden cursor-pointer bg-zinc-900"
         onClick={() => onView(product)}
       >
         <img
@@ -408,40 +423,40 @@ const ProductCard: React.FC<{
           alt={product.name}
           className="w-full h-full object-cover img-zoom"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         {/* Badges */}
-        <div className="absolute top-3 right-3 flex flex-col gap-1.5">
+        <div className="absolute top-4 right-4 flex flex-col gap-2">
           {product.isPopular && (
-            <span className="bg-brand-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg">
+            <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-orange-500/30">
               پرفروش
             </span>
           )}
           {product.isNew && (
-            <span className="bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg">
+            <span className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-emerald-500/30">
               جدید
             </span>
           )}
           {product.isSpicy && (
-            <span className="bg-red-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg flex items-center gap-1">
+            <span className="bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-red-500/30 flex items-center gap-1">
               {Icons.fire} تند
             </span>
           )}
         </div>
 
         {discount > 0 && (
-          <div className="absolute top-3 left-3">
-            <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-lg">
+          <div className="absolute top-4 left-4">
+            <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg shadow-red-500/30">
               {discount}%-
             </span>
           </div>
         )}
 
         {/* Quick add overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+        <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
           <button
             onClick={(e) => { e.stopPropagation(); onAdd(product); }}
-            className="w-full bg-white/95 backdrop-blur-sm text-dark-900 text-sm font-bold py-3 rounded-xl hover:bg-white transition-colors shadow-xl btn-press"
+            className="w-full bg-white/95 backdrop-blur-sm text-black text-sm font-bold py-3.5 rounded-xl hover:bg-white transition-colors shadow-xl btn-press"
           >
             افزودن به سبد خرید
           </button>
@@ -449,36 +464,36 @@ const ProductCard: React.FC<{
       </div>
 
       {/* Content */}
-      <div className="p-5">
-        <div className="flex items-center gap-1.5 mb-2">
+      <div className="p-6">
+        <div className="flex items-center gap-1.5 mb-3">
           {Icons.star}
-          <span className="text-xs font-bold text-dark-700">{product.rating}</span>
-          <span className="text-xs text-dark-400">({formatPrice(product.reviews)} نظر)</span>
+          <span className="text-xs font-bold text-white/80">{product.rating}</span>
+          <span className="text-xs text-white/40">({formatPrice(product.reviews)} نظر)</span>
         </div>
 
-        <h3 className="font-bold text-dark-900 mb-1.5">{product.name}</h3>
-        <p className="text-xs text-dark-500 line-clamp-2 leading-relaxed mb-4">
+        <h3 className="font-black text-white text-lg mb-2 group-hover:text-orange-400 transition-colors duration-500">{product.name}</h3>
+        <p className="text-xs text-white/40 line-clamp-2 leading-relaxed mb-5">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between pt-4 border-t border-dark-100">
+        <div className="flex items-center justify-between pt-5 border-t border-white/5">
           <div>
             {product.originalPrice && (
-              <span className="text-xs text-dark-300 line-through block">
+              <span className="text-xs text-white/20 line-through block">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="font-black text-dark-900 text-xl">
+              <span className="font-black text-white text-2xl">
                 {formatPrice(product.price)}
               </span>
-              <span className="text-xs text-dark-400">تومان</span>
+              <span className="text-xs text-white/30">تومان</span>
             </div>
           </div>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => onAdd(product)}
-            className="w-10 h-10 bg-dark-900 hover:bg-brand-500 rounded-xl flex items-center justify-center text-white transition-colors shadow-lg"
+            className="w-11 h-11 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-xl flex items-center justify-center text-white transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50"
           >
             {Icons.plus}
           </motion.button>
@@ -508,88 +523,88 @@ const ProductModal: React.FC<{
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/90 backdrop-blur-xl"
           onClick={onClose}
         />
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          exit={{ opacity: 0, scale: 0.9, y: 30 }}
           transition={{ type: 'spring', damping: 25 }}
-          className="relative bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+          className="relative bg-zinc-900 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-white/10"
         >
           {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-4 left-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors btn-press"
+            className="absolute top-4 left-4 z-10 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-colors btn-press text-white"
           >
             {Icons.close}
           </button>
 
           {/* Image */}
-          <div className="relative h-64 sm:h-80 overflow-hidden rounded-t-3xl">
+          <div className="relative h-72 sm:h-96 overflow-hidden rounded-t-3xl">
             <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/30 to-transparent" />
           </div>
 
           {/* Content */}
-          <div className="p-6 sm:p-8 -mt-12 relative">
-            <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="p-6 sm:p-8 -mt-16 relative">
+            <div className="flex items-start justify-between gap-4 mb-6">
               <div>
-                <h2 className="text-2xl font-black text-white drop-shadow-lg">{product.name}</h2>
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-2 py-1">
+                <h2 className="text-3xl font-black text-white drop-shadow-lg">{product.name}</h2>
+                <div className="flex items-center gap-3 mt-3">
+                  <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5">
                     {Icons.star}
                     <span className="font-bold text-sm text-white">{product.rating}</span>
                   </div>
-                  <span className="text-sm text-white/70">{formatPrice(product.reviews)} نظر</span>
+                  <span className="text-sm text-white/50">{formatPrice(product.reviews)} نظر</span>
                 </div>
               </div>
-              <div className="text-left bg-white rounded-2xl px-4 py-3 shadow-xl">
+              <div className="text-left bg-white/10 backdrop-blur-sm rounded-2xl px-5 py-4 border border-white/10">
                 {product.originalPrice && (
-                  <span className="text-sm text-dark-300 line-through block">
+                  <span className="text-sm text-white/30 line-through block">
                     {formatPrice(product.originalPrice)}
                   </span>
                 )}
-                <span className="text-xl font-black text-dark-900">
+                <span className="text-2xl font-black gradient-text">
                   {formatPrice(product.price)}
                 </span>
-                <span className="text-xs text-dark-400"> تومان</span>
+                <span className="text-xs text-white/40"> تومان</span>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-xl">
-              <p className="text-dark-600 leading-relaxed mb-6">{product.description}</p>
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
+              <p className="text-white/60 leading-relaxed mb-8">{product.description}</p>
 
               {/* Info Grid */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-2 gap-4 mb-8">
                 {product.calories && (
-                  <div className="bg-dark-50 rounded-2xl p-4 text-center">
-                    <div className="w-10 h-10 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center mx-auto mb-2">
+                  <div className="bg-white/5 rounded-2xl p-5 text-center border border-white/5">
+                    <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-orange-500/30 text-white">
                       {Icons.fire}
                     </div>
-                    <p className="text-xl font-black text-dark-900">{product.calories}</p>
-                    <p className="text-xs text-dark-400 mt-1">کالری</p>
+                    <p className="text-2xl font-black text-white">{product.calories}</p>
+                    <p className="text-xs text-white/40 mt-1">کالری</p>
                   </div>
                 )}
                 {product.prepTime && (
-                  <div className="bg-dark-50 rounded-2xl p-4 text-center">
-                    <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-2">
+                  <div className="bg-white/5 rounded-2xl p-5 text-center border border-white/5">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/30 text-white">
                       {Icons.clock}
                     </div>
-                    <p className="text-xl font-black text-dark-900">{product.prepTime}</p>
-                    <p className="text-xs text-dark-400 mt-1">زمان آماده‌سازی</p>
+                    <p className="text-2xl font-black text-white">{product.prepTime}</p>
+                    <p className="text-xs text-white/40 mt-1">زمان آماده‌سازی</p>
                   </div>
                 )}
               </div>
 
               {/* Ingredients */}
               {product.ingredients && (
-                <div className="mb-6">
-                  <h3 className="font-bold text-dark-900 mb-3 text-sm">مواد تشکیل‌دهنده</h3>
+                <div className="mb-8">
+                  <h3 className="font-bold text-white mb-4">مواد تشکیل‌دهنده</h3>
                   <div className="flex flex-wrap gap-2">
                     {product.ingredients.map((ing, i) => (
-                      <span key={i} className="bg-dark-50 text-dark-600 text-xs px-3 py-2 rounded-xl font-medium border border-dark-100">
+                      <span key={i} className="bg-white/5 text-white/60 text-xs px-4 py-2 rounded-xl font-medium border border-white/5">
                         {ing}
                       </span>
                     ))}
@@ -601,7 +616,7 @@ const ProductModal: React.FC<{
               <motion.button
                 whileTap={{ scale: 0.98 }}
                 onClick={() => { onAdd(product); onClose(); }}
-                className="w-full bg-dark-900 hover:bg-dark-800 text-white font-bold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-xl"
+                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-5 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 text-lg"
               >
                 {Icons.cart}
                 افزودن به سبد خرید
@@ -634,7 +649,7 @@ const CartSidebar: React.FC<{
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50"
             onClick={onClose}
           />
           <motion.div
@@ -642,18 +657,18 @@ const CartSidebar: React.FC<{
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed top-0 left-0 h-full w-full max-w-md bg-white z-50 shadow-2xl"
+            className="fixed top-0 left-0 h-full w-full max-w-md bg-zinc-900 z-50 shadow-2xl border-r border-white/5"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-dark-100">
+              <div className="flex items-center justify-between p-6 border-b border-white/5">
                 <div>
-                  <h2 className="text-xl font-black text-dark-900">سبد خرید</h2>
-                  <p className="text-sm text-dark-400 mt-0.5">{items.length} محصول</p>
+                  <h2 className="text-2xl font-black text-white">سبد خرید</h2>
+                  <p className="text-sm text-white/40 mt-1">{items.length} محصول</p>
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-10 h-10 bg-dark-50 rounded-xl flex items-center justify-center hover:bg-dark-100 transition-colors btn-press"
+                  className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center hover:bg-white/10 transition-colors btn-press text-white"
                 >
                   {Icons.close}
                 </button>
@@ -663,11 +678,11 @@ const CartSidebar: React.FC<{
               <div className="flex-1 overflow-y-auto p-6">
                 {items.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full text-center">
-                    <div className="w-24 h-24 bg-dark-50 rounded-full flex items-center justify-center mb-4">
-                      <div className="text-dark-300 scale-150">{Icons.cart}</div>
+                    <div className="w-28 h-28 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                      <div className="text-white/20 scale-[2]">{Icons.cart}</div>
                     </div>
-                    <p className="font-bold text-dark-900 mb-1">سبد خرید شما خالی است</p>
-                    <p className="text-sm text-dark-400">محصولات مورد علاقه‌تان را اضافه کنید</p>
+                    <p className="font-bold text-white text-lg mb-2">سبد خرید شما خالی است</p>
+                    <p className="text-sm text-white/40">محصولات مورد علاقه‌تان را اضافه کنید</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -679,31 +694,31 @@ const CartSidebar: React.FC<{
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20, height: 0 }}
-                          className="flex gap-3 bg-dark-50 rounded-2xl p-3"
+                          className="flex gap-4 bg-white/5 rounded-2xl p-4 border border-white/5"
                         >
                           <img src={item.image} alt={item.name} className="w-20 h-20 rounded-xl object-cover" />
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-sm text-dark-900 truncate">{item.name}</h4>
-                            <p className="text-sm font-bold text-dark-700 mt-1">
+                            <h4 className="font-bold text-sm text-white truncate">{item.name}</h4>
+                            <p className="text-sm font-bold gradient-text mt-1">
                               {formatPrice(item.price * item.quantity)} تومان
                             </p>
-                            <div className="flex items-center gap-2 mt-2">
+                            <div className="flex items-center gap-2 mt-3">
                               <button
                                 onClick={() => onUpdateQty(item.id, -1)}
-                                className="w-7 h-7 bg-white rounded-lg flex items-center justify-center text-dark-600 hover:bg-dark-100 transition-colors btn-press shadow-sm"
+                                className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-white/60 hover:bg-white/10 transition-colors btn-press"
                               >
                                 {Icons.minus}
                               </button>
-                              <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
+                              <span className="text-sm font-bold w-6 text-center text-white">{item.quantity}</span>
                               <button
                                 onClick={() => onUpdateQty(item.id, 1)}
-                                className="w-7 h-7 bg-dark-900 rounded-lg flex items-center justify-center text-white hover:bg-dark-800 transition-colors btn-press"
+                                className="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white hover:from-orange-600 hover:to-red-600 transition-all btn-press"
                               >
                                 {Icons.plus}
                               </button>
                               <button
                                 onClick={() => onRemove(item.id)}
-                                className="mr-auto w-7 h-7 flex items-center justify-center text-red-400 hover:text-red-600 transition-colors btn-press"
+                                className="mr-auto w-8 h-8 flex items-center justify-center text-red-400/60 hover:text-red-400 transition-colors btn-press"
                               >
                                 {Icons.trash}
                               </button>
@@ -718,32 +733,32 @@ const CartSidebar: React.FC<{
 
               {/* Footer */}
               {items.length > 0 && (
-                <div className="border-t border-dark-100 p-6 space-y-3 bg-dark-50/50">
+                <div className="border-t border-white/5 p-6 space-y-4 bg-black/30">
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-500">جمع سفارش</span>
-                    <span className="font-bold">{formatPrice(total)} تومان</span>
+                    <span className="text-white/40">جمع سفارش</span>
+                    <span className="font-bold text-white">{formatPrice(total)} تومان</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-dark-500">هزینه ارسال</span>
-                    <span className={`font-bold ${deliveryFee === 0 ? 'text-emerald-600' : ''}`}>
+                    <span className="text-white/40">هزینه ارسال</span>
+                    <span className={`font-bold ${deliveryFee === 0 ? 'text-emerald-400' : 'text-white'}`}>
                       {deliveryFee === 0 ? 'رایگان' : `${formatPrice(deliveryFee)} تومان`}
                     </span>
                   </div>
                   {deliveryFee > 0 && (
-                    <div className="bg-brand-50 border border-brand-100 rounded-xl p-3 text-xs text-brand-700">
+                    <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl p-3 text-xs text-orange-300">
                       با افزودن {formatPrice(500000 - total)} تومان دیگر، ارسال رایگان خواهد بود.
                     </div>
                   )}
-                  <div className="flex justify-between pt-3 border-t border-dark-200">
-                    <span className="font-bold text-dark-900">مبلغ قابل پرداخت</span>
-                    <span className="font-black text-xl text-dark-900">
-                      {formatPrice(total + deliveryFee)} <span className="text-sm font-normal text-dark-400">تومان</span>
+                  <div className="flex justify-between pt-4 border-t border-white/5">
+                    <span className="font-bold text-white">مبلغ قابل پرداخت</span>
+                    <span className="font-black text-2xl gradient-text">
+                      {formatPrice(total + deliveryFee)} <span className="text-sm font-normal text-white/30">تومان</span>
                     </span>
                   </div>
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={onCheckout}
-                    className="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 rounded-2xl transition-all shadow-xl shadow-brand-500/30 btn-press"
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-5 rounded-2xl transition-all shadow-xl shadow-orange-500/30 hover:shadow-orange-500/50 btn-press text-lg"
                   >
                     ثبت سفارش و پرداخت
                   </motion.button>
@@ -759,16 +774,18 @@ const CartSidebar: React.FC<{
 
 // ─── Testimonials ──────────────────────────────────────────
 const TestimonialsSection: React.FC = () => (
-  <section className="py-20 bg-dark-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section className="py-24 bg-gradient-to-b from-zinc-950 to-black relative overflow-hidden">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl" />
+
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        className="text-center mb-14"
       >
-        <h2 className="text-3xl lg:text-4xl font-black text-dark-900 mb-3">نظر مشتریان ما</h2>
-        <p className="text-dark-500">بیش از ۵۰ هزار مشتری راضی در سراسر کشور</p>
+        <h2 className="text-4xl lg:text-5xl font-black text-white mb-4">نظر مشتریان ما</h2>
+        <p className="text-white/40 text-lg">بیش از ۵۰ هزار مشتری راضی در سراسر کشور</p>
       </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {testimonials.map((t, i) => (
@@ -778,19 +795,19 @@ const TestimonialsSection: React.FC = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white rounded-3xl p-6 border border-dark-100 hover:shadow-xl hover:shadow-black/5 transition-all duration-500"
+            className="group bg-white/5 rounded-3xl p-8 border border-white/5 hover:border-orange-500/20 hover:shadow-2xl hover:shadow-orange-500/5 transition-all duration-700 hover-lift"
           >
-            <div className="flex items-center gap-1 mb-4">
+            <div className="flex items-center gap-1 mb-5">
               {[...Array(t.rating)].map((_, i) => (
                 <span key={i}>{Icons.star}</span>
               ))}
             </div>
-            <p className="text-dark-600 leading-relaxed mb-6 text-sm">"{t.text}"</p>
-            <div className="flex items-center gap-3 pt-4 border-t border-dark-100">
-              <img src={t.avatar} alt={t.name} className="w-11 h-11 rounded-full object-cover ring-2 ring-brand-100" />
+            <p className="text-white/60 leading-relaxed mb-8">"{t.text}"</p>
+            <div className="flex items-center gap-4 pt-6 border-t border-white/5">
+              <img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500/30" />
               <div>
-                <p className="font-bold text-sm text-dark-900">{t.name}</p>
-                <p className="text-xs text-dark-400">{t.role}</p>
+                <p className="font-bold text-white">{t.name}</p>
+                <p className="text-xs text-white/40">{t.role}</p>
               </div>
             </div>
           </motion.div>
@@ -802,31 +819,31 @@ const TestimonialsSection: React.FC = () => (
 
 // ─── Footer ────────────────────────────────────────────────
 const Footer: React.FC = () => (
-  <footer className="bg-dark-950 text-white">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+  <footer className="bg-black border-t border-white/5">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
         {/* Brand */}
         <div>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 bg-gradient-to-br from-brand-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-brand-500/30">
-              <span className="text-white font-black text-xl">B</span>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 via-red-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30">
+              <span className="text-white font-black text-2xl">B</span>
             </div>
             <div>
-              <h3 className="font-black text-xl leading-none">برگرلند</h3>
-              <p className="text-dark-400 text-[10px] tracking-wider">BURGER LAND</p>
+              <h3 className="font-black text-2xl bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent leading-none">برگرلند</h3>
+              <p className="text-white/30 text-[10px] tracking-[0.3em]">BURGER LAND</p>
             </div>
           </div>
-          <p className="text-dark-400 text-sm leading-relaxed mb-6">
+          <p className="text-white/40 text-sm leading-relaxed mb-8">
             برگرلند با بیش از ۱۰ سال تجربه، بهترین فست‌فود خانگی را با مواد اولیه تازه و باکیفیت ارائه می‌دهد.
           </p>
           <div className="flex items-center gap-3">
-            <a href="#" className="w-10 h-10 bg-white/5 hover:bg-brand-500 rounded-xl flex items-center justify-center transition-all btn-press">
+            <a href="#" className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 rounded-xl flex items-center justify-center transition-all btn-press text-white/40 hover:text-white">
               {Icons.instagram}
             </a>
-            <a href="#" className="w-10 h-10 bg-white/5 hover:bg-brand-500 rounded-xl flex items-center justify-center transition-all btn-press">
+            <a href="#" className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 rounded-xl flex items-center justify-center transition-all btn-press text-white/40 hover:text-white">
               {Icons.telegram}
             </a>
-            <a href="#" className="w-10 h-10 bg-white/5 hover:bg-brand-500 rounded-xl flex items-center justify-center transition-all btn-press">
+            <a href="#" className="w-11 h-11 bg-white/5 hover:bg-gradient-to-br hover:from-orange-500 hover:to-red-500 rounded-xl flex items-center justify-center transition-all btn-press text-white/40 hover:text-white">
               {Icons.whatsapp}
             </a>
           </div>
@@ -834,12 +851,12 @@ const Footer: React.FC = () => (
 
         {/* Links */}
         <div>
-          <h4 className="font-bold mb-5 text-lg">دسترسی سریع</h4>
-          <ul className="space-y-3">
+          <h4 className="font-black mb-6 text-lg text-white">دسترسی سریع</h4>
+          <ul className="space-y-4">
             {['صفحه اصلی', 'منوی غذا', 'درباره ما', 'تماس با ما', 'بلاگ'].map((l) => (
               <li key={l}>
-                <a href="#" className="text-dark-400 hover:text-white text-sm transition-colors flex items-center gap-2 group">
-                  <span className="w-1 h-1 bg-brand-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                <a href="#" className="text-white/40 hover:text-orange-400 text-sm transition-colors flex items-center gap-3 group">
+                  <span className="w-1.5 h-1.5 bg-orange-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                   {l}
                 </a>
               </li>
@@ -849,26 +866,26 @@ const Footer: React.FC = () => (
 
         {/* Contact */}
         <div>
-          <h4 className="font-bold mb-5 text-lg">ارتباط با ما</h4>
-          <ul className="space-y-4">
-            <li className="flex items-center gap-3 text-dark-400 text-sm">
-              <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-brand-500">
+          <h4 className="font-black mb-6 text-lg text-white">ارتباط با ما</h4>
+          <ul className="space-y-5">
+            <li className="flex items-center gap-4 text-white/40 text-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-orange-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
               </div>
               ۰۲۱-۱۲۳۴۵۶۷۸
             </li>
-            <li className="flex items-center gap-3 text-dark-400 text-sm">
-              <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-brand-500">
+            <li className="flex items-center gap-4 text-white/40 text-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-orange-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
               info@burgerland.ir
             </li>
-            <li className="flex items-center gap-3 text-dark-400 text-sm">
-              <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-brand-500">
+            <li className="flex items-center gap-4 text-white/40 text-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-orange-400">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -876,8 +893,8 @@ const Footer: React.FC = () => (
               </div>
               تهران، خیابان ولیعصر، پلاک ۱۲۳
             </li>
-            <li className="flex items-center gap-3 text-dark-400 text-sm">
-              <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-brand-500">
+            <li className="flex items-center gap-4 text-white/40 text-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-orange-400">
                 {Icons.clock}
               </div>
               هر روز ۱۱ صبح تا ۱۲ شب
@@ -887,25 +904,25 @@ const Footer: React.FC = () => (
 
         {/* Newsletter */}
         <div>
-          <h4 className="font-bold mb-5 text-lg">عضویت در خبرنامه</h4>
-          <p className="text-dark-400 text-sm mb-4">
+          <h4 className="font-black mb-6 text-lg text-white">عضویت در خبرنامه</h4>
+          <p className="text-white/40 text-sm mb-5">
             از تخفیف‌ها و پیشنهادات ویژه باخبر شوید
           </p>
           <div className="flex gap-2">
             <input
               type="email"
               placeholder="ایمیل شما"
-              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-brand-500 transition-colors placeholder-dark-500"
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-orange-500/50 transition-colors placeholder-white/20 text-white"
             />
-            <button className="bg-brand-500 hover:bg-brand-600 text-white px-5 py-3 rounded-xl text-sm font-bold transition-colors btn-press">
+            <button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-all btn-press shadow-lg shadow-orange-500/30">
               عضویت
             </button>
           </div>
-          <div className="mt-6 flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-white/5 rounded-xl px-3 py-2">
-              <span className="text-brand-500 text-lg">🏆</span>
-              <span className="text-xs text-dark-400">بهترین رستوران ۱۴۰۳</span>
+          <div className="mt-8 flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3 border border-white/5">
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center text-white text-sm font-black">
+              ۱
             </div>
+            <span className="text-xs text-white/50">بهترین رستوران سال ۱۴۰۳</span>
           </div>
         </div>
       </div>
@@ -913,15 +930,15 @@ const Footer: React.FC = () => (
 
     {/* Bottom */}
     <div className="border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <p className="text-dark-500 text-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-white/30 text-xs">
           © ۱۴۰۵ برگرلند. تمامی حقوق محفوظ است.
         </p>
         <div className="flex items-center gap-4">
-          <span className="text-xs text-dark-500">پرداخت امن</span>
+          <span className="text-xs text-white/30">پرداخت امن</span>
           <div className="flex items-center gap-2">
-            <div className="bg-white/5 px-3 py-1.5 rounded-lg text-xs text-dark-400">زرین‌پال</div>
-            <div className="bg-white/5 px-3 py-1.5 rounded-lg text-xs text-dark-400">پی‌پینگ</div>
+            <div className="bg-white/5 px-4 py-2 rounded-lg text-xs text-white/40 border border-white/5">زرین‌پال</div>
+            <div className="bg-white/5 px-4 py-2 rounded-lg text-xs text-white/40 border border-white/5">پی‌پینگ</div>
           </div>
         </div>
       </div>
@@ -947,41 +964,41 @@ const OrderSuccessModal: React.FC<{
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/90 backdrop-blur-xl"
           onClick={onClose}
         />
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          exit={{ opacity: 0, scale: 0.9, y: 30 }}
           transition={{ type: 'spring', damping: 25 }}
-          className="relative bg-white rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl"
+          className="relative bg-zinc-900 rounded-3xl max-w-sm w-full p-10 text-center shadow-2xl border border-white/10"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: 'spring' }}
-            className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6"
+            className="w-24 h-24 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-500/30"
           >
-            <div className="text-emerald-500">{Icons.check}</div>
+            <div className="text-white scale-150">{Icons.check}</div>
           </motion.div>
-          <h2 className="text-2xl font-black text-dark-900 mb-2">سفارش ثبت شد</h2>
-          <p className="text-dark-400 mb-6 text-sm">سفارش شما با موفقیت ثبت و در حال آماده‌سازی است</p>
-          <div className="bg-dark-50 rounded-2xl p-4 mb-4">
-            <p className="text-xs text-dark-400">شماره سفارش</p>
-            <p className="text-2xl font-black text-dark-900 mt-1">#{orderNumber}</p>
+          <h2 className="text-3xl font-black text-white mb-3">سفارش ثبت شد</h2>
+          <p className="text-white/40 mb-8">سفارش شما با موفقیت ثبت و در حال آماده‌سازی است</p>
+          <div className="bg-white/5 rounded-2xl p-5 mb-5 border border-white/5">
+            <p className="text-xs text-white/30">شماره سفارش</p>
+            <p className="text-3xl font-black gradient-text mt-2">#{orderNumber}</p>
           </div>
-          <div className="bg-brand-50 rounded-2xl p-4 mb-6 flex items-center justify-center gap-3">
-            <div className="text-brand-600">{Icons.clock}</div>
+          <div className="bg-orange-500/10 rounded-2xl p-5 mb-8 flex items-center justify-center gap-4 border border-orange-500/20">
+            <div className="text-orange-400 scale-125">{Icons.clock}</div>
             <div className="text-right">
-              <p className="text-xs text-brand-700">زمان تقریبی تحویل</p>
-              <p className="font-black text-brand-600">۲۵ تا ۳۵ دقیقه</p>
+              <p className="text-xs text-orange-300/60">زمان تقریبی تحویل</p>
+              <p className="font-black text-orange-400 text-lg">۲۵ تا ۳۵ دقیقه</p>
             </div>
           </div>
           <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={onClose}
-            className="w-full bg-dark-900 text-white font-bold py-4 rounded-2xl hover:bg-dark-800 transition-colors btn-press"
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 rounded-2xl transition-all btn-press shadow-xl shadow-orange-500/30"
           >
             بازگشت به فروشگاه
           </motion.button>
@@ -999,10 +1016,12 @@ const Toast: React.FC<{ message: string | null }> = ({ message }) => (
         initial={{ opacity: 0, y: 50, x: '-50%' }}
         animate={{ opacity: 1, y: 0, x: '-50%' }}
         exit={{ opacity: 0, y: 50, x: '-50%' }}
-        className="fixed bottom-6 left-1/2 z-[80]"
+        className="fixed bottom-8 left-1/2 z-[80]"
       >
-        <div className="bg-dark-900 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
-          <div className="text-emerald-400">{Icons.check}</div>
+        <div className="bg-zinc-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10">
+          <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
+            <div className="text-white scale-75">{Icons.check}</div>
+          </div>
           <span className="text-sm font-medium">{message}</span>
         </div>
       </motion.div>
@@ -1075,7 +1094,7 @@ const App: React.FC = () => {
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-dark-50">
+    <div className="min-h-screen bg-black">
       <Header
         cartCount={cartCount}
         onCartOpen={() => setCartOpen(true)}
@@ -1087,33 +1106,36 @@ const App: React.FC = () => {
       <FeaturesSection />
 
       {/* Menu Section */}
-      <section id="menu" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="menu" className="py-24 bg-gradient-to-b from-zinc-950 to-black relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-500/5 rounded-full blur-3xl" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           {/* Section Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8"
+            className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10"
           >
             <div>
-              <h2 className="text-3xl lg:text-4xl font-black text-dark-900 mb-2">منوی غذا</h2>
-              <p className="text-dark-500">از بین بهترین غذاهای ما انتخاب کنید</p>
+              <h2 className="text-4xl lg:text-5xl font-black text-white mb-3">منوی غذا</h2>
+              <p className="text-white/40 text-lg">از بین بهترین غذاهای ما انتخاب کنید</p>
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-dark-50 border border-dark-100 rounded-2xl px-5 py-3 text-sm outline-none focus:border-brand-500 transition-colors cursor-pointer"
+              className="bg-white/5 border border-white/10 rounded-2xl px-6 py-3.5 text-sm text-white outline-none focus:border-orange-500/50 transition-colors cursor-pointer appearance-none"
             >
-              <option value="default">مرتب‌سازی: پیش‌فرض</option>
-              <option value="price-asc">ارزان‌ترین</option>
-              <option value="price-desc">گران‌ترین</option>
-              <option value="rating">بیشترین امتیاز</option>
+              <option value="default" className="bg-zinc-900">مرتب‌سازی: پیش‌فرض</option>
+              <option value="price-asc" className="bg-zinc-900">ارزان‌ترین</option>
+              <option value="price-desc" className="bg-zinc-900">گران‌ترین</option>
+              <option value="rating" className="bg-zinc-900">بیشترین امتیاز</option>
             </select>
           </motion.div>
 
           {/* Categories */}
-          <div className="mb-10">
+          <div className="mb-12">
             <CategoryBar
               categories={categories}
               active={activeCategory}
@@ -1135,12 +1157,12 @@ const App: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <div className="w-24 h-24 bg-dark-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="text-dark-300 scale-150">{Icons.search}</div>
+            <div className="text-center py-24">
+              <div className="w-28 h-28 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="text-white/20 scale-[2]">{Icons.search}</div>
               </div>
-              <p className="font-bold text-dark-900 mb-1">محصولی یافت نشد</p>
-              <p className="text-sm text-dark-400">فیلترها را تغییر دهید یا عبارت دیگری جستجو کنید</p>
+              <p className="font-bold text-white text-xl mb-2">محصولی یافت نشد</p>
+              <p className="text-white/40">فیلترها را تغییر دهید یا عبارت دیگری جستجو کنید</p>
             </div>
           )}
         </div>
@@ -1149,7 +1171,7 @@ const App: React.FC = () => {
       <TestimonialsSection />
 
       {/* CTA Section */}
-      <section className="py-24 bg-dark-950 relative overflow-hidden">
+      <section className="py-32 bg-black relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <img
             src={IMG_HERO}
@@ -1157,22 +1179,30 @@ const App: React.FC = () => {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-l from-dark-950 via-dark-950/80 to-dark-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black via-black/80 to-black/40" />
+        <div className="absolute inset-0 gradient-mesh opacity-20" />
+
+        {/* Floating orbs */}
+        <div className="absolute top-10 right-10 w-64 h-64 bg-orange-500/20 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4">
-              آماده‌اید سفارش خود را ثبت کنید؟
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
+              آماده‌اید سفارش خود را
+              <br />
+              <span className="gradient-text">ثبت کنید؟</span>
             </h2>
-            <p className="text-white/60 mb-8 max-w-lg mx-auto text-lg">
+            <p className="text-white/50 mb-10 max-w-lg mx-auto text-lg">
               همین الان سفارش دهید و در کمتر از ۳۰ دقیقه غذای تازه و داغ خود را دریافت کنید
             </p>
             <a
               href="#menu"
-              className="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold px-10 py-5 rounded-2xl transition-all btn-press shadow-xl shadow-brand-500/30 text-lg"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-12 py-6 rounded-2xl transition-all btn-press shadow-2xl shadow-orange-500/40 hover:shadow-orange-500/60 animate-pulse-glow text-xl"
             >
               سفارش آنلاین
               <span className="rotate-180">{Icons.arrow}</span>
