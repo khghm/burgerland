@@ -275,7 +275,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl floating" />
       <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-red-500/10 rounded-full blur-3xl floating-delay" />
 
-      <motion.div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center" style={{ opacity }}>
+      <motion.div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center" style={{ opacity }}>
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8">
           <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
           <span className="text-white/90 text-sm font-medium">ارسال رایگان برای سفارش‌های بالای ۵۰۰ هزار تومان</span>
@@ -337,12 +337,12 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <section id="features" className="py-20 bg-black relative overflow-hidden gradient-mesh">
+    <section id="features" className="py-12 bg-black relative overflow-hidden gradient-mesh">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((f, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
-              <SpotlightCard className="group relative bg-white/5 backdrop-blur-sm hover:bg-white/10 rounded-3xl p-6 border border-white/10 hover:border-white/20 transition-all duration-500 hover-lift card-shine h-full">
+              <SpotlightCard className="group relative bg-white/5 backdrop-blur-sm hover:bg-white/10 rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all duration-500 hover-lift card-shine h-full">
                 <div className={`w-14 h-14 bg-gradient-to-br ${f.color} rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>{f.icon}</div>
                 <h3 className="font-bold text-white text-lg mb-2">{f.title}</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">{f.desc}</p>
@@ -413,43 +413,43 @@ const ProductCard: React.FC<{ product: Product; onAdd: (p: Product) => void; onV
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }}>
-      <TiltCard className="group bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 card-shine h-full flex flex-col">
-        <div className="relative h-56 overflow-hidden cursor-pointer bg-black/50" onClick={() => onView(product)}>
+      <TiltCard className="group bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-white/20 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 card-shine h-full flex flex-col">
+        <div className="relative h-48 overflow-hidden cursor-pointer bg-black/50" onClick={() => onView(product)}>
           <img src={product.image} alt={product.name} className="w-full h-full object-cover img-zoom" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-          <div className="absolute top-3 right-3 flex flex-col gap-1.5">
-            {product.isPopular && <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg">پرفروش</span>}
-            {product.isNew && <span className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg">جدید</span>}
-            {product.isSpicy && <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-lg flex items-center gap-1">{I.fire} تند</span>}
+          <div className="absolute top-2 right-2 flex flex-col gap-1">
+            {product.isPopular && <span className="bg-gradient-to-r from-orange-500 to-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-lg">پرفروش</span>}
+            {product.isNew && <span className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-lg">جدید</span>}
+            {product.isSpicy && <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shadow-lg flex items-center gap-1">{I.fire} تند</span>}
           </div>
 
-          {discount > 0 && <div className="absolute top-3 left-3"><span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-lg">{discount}%-</span></div>}
+          {discount > 0 && <div className="absolute top-2 left-2"><span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-lg shadow-lg">{discount}%-</span></div>}
 
-          <motion.div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <button onClick={(e) => { e.stopPropagation(); onAdd(product); }} className="w-full bg-white/95 backdrop-blur-sm text-black text-sm font-bold py-3 rounded-xl hover:bg-white transition-colors shadow-xl btn-press ripple">
+          <motion.div className="absolute bottom-0 left-0 right-0 p-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <button onClick={(e) => { e.stopPropagation(); onAdd(product); }} className="w-full bg-white/95 backdrop-blur-sm text-black text-sm font-bold py-2.5 rounded-xl hover:bg-white transition-colors shadow-xl btn-press ripple">
               افزودن به سبد خرید
             </button>
           </motion.div>
         </div>
 
-        <div className="p-5 flex flex-col flex-1">
-          <div className="flex items-center gap-1.5 mb-2">
+        <div className="p-4 flex flex-col flex-1">
+          <div className="flex items-center gap-1.5 mb-1.5">
             {I.star}
             <span className="text-xs font-bold text-white">{product.rating}</span>
             <span className="text-xs text-gray-500">({formatPrice(product.reviews)} نظر)</span>
           </div>
-          <h3 className="font-bold text-white mb-1.5">{product.name}</h3>
-          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-4 flex-1">{product.description}</p>
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <h3 className="font-bold text-white text-sm mb-1">{product.name}</h3>
+          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-3 flex-1">{product.description}</p>
+          <div className="flex items-center justify-between pt-3 border-t border-white/10">
             <div>
               {product.originalPrice && <span className="text-xs text-gray-500 line-through block">{formatPrice(product.originalPrice)}</span>}
               <div className="flex items-baseline gap-1">
-                <span className="font-black text-white text-xl">{formatPrice(product.price)}</span>
+                <span className="font-black text-white text-lg">{formatPrice(product.price)}</span>
                 <span className="text-xs text-gray-500">تومان</span>
               </div>
             </div>
-            <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={() => onAdd(product)} className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded-xl flex items-center justify-center text-white transition-all shadow-lg shadow-orange-500/30">
+            <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={() => onAdd(product)} className="w-9 h-9 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded-xl flex items-center justify-center text-white transition-all shadow-lg shadow-orange-500/30">
               {I.plus}
             </motion.button>
           </div>
@@ -569,9 +569,9 @@ const CartSidebar: React.FC<{ isOpen: boolean; onClose: () => void; items: CartI
 
 // ─── Testimonials ──────────────────────────────────────────
 const TestimonialsSection: React.FC = () => (
-  <section className="py-20 bg-black relative overflow-hidden gradient-mesh">
+  <section className="py-12 bg-black relative overflow-hidden gradient-mesh">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
         <h2 className="text-3xl lg:text-4xl font-black text-white mb-3">نظر مشتریان ما</h2>
         <p className="text-gray-400">بیش از ۵۰ هزار مشتری راضی در سراسر کشور</p>
       </motion.div>
@@ -596,8 +596,8 @@ const TestimonialsSection: React.FC = () => (
 // ─── Footer ────────────────────────────────────────────────
 const Footer: React.FC = () => (
   <footer className="bg-black border-t border-white/10">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
           <div className="flex items-center gap-3 mb-4">
             <div className="w-11 h-11 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/30"><span className="text-white font-black text-xl">B</span></div>
@@ -747,7 +747,7 @@ const App: React.FC = () => {
       <MarqueeSection />
       <FeaturesSection />
 
-      <section id="menu" className="py-20 bg-black relative overflow-hidden gradient-mesh">
+      <section id="menu" className="py-12 bg-black relative overflow-hidden gradient-mesh">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
             <h2 className="text-3xl lg:text-5xl font-black text-white mb-3">منوی غذا</h2>
@@ -783,7 +783,7 @@ const App: React.FC = () => {
           </div>
 
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {filtered.map((product, index) => (
                 <ProductCard key={product.id} product={product} onAdd={addToCart} onView={setSelectedProduct} index={index} />
               ))}
@@ -800,7 +800,7 @@ const App: React.FC = () => {
 
       <TestimonialsSection />
 
-      <section className="py-24 bg-black relative overflow-hidden">
+      <section className="py-16 bg-black relative overflow-hidden">
         <div className="absolute inset-0 opacity-20"><img src={IMG_HERO} alt="" className="w-full h-full object-cover" /></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
