@@ -308,6 +308,17 @@ const ProductForm: React.FC<{ product: Product | null; onSave: (p: Product) => v
     name: '', description: '', price: 0, image: '', category: 'burger', rating: 4.5, reviews: 0, calories: 0, prepTime: '', ingredients: [],
   });
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm({ ...form, image: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(form as Product);
@@ -349,10 +360,55 @@ const ProductForm: React.FC<{ product: Product | null; onSave: (p: Product) => v
               </select>
             </div>
           </div>
+          
+          {/* Image Upload Section */}
           <div>
-            <label className="text-sm text-gray-400 mb-1 block">آدرس تصویر (URL)</label>
-            <input type="url" value={form.image || ''} onChange={e => setForm({ ...form, image: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-orange-500/50" placeholder="https://..." />
+            <label className="text-sm text-gray-400 mb-2 block">تصویر محصول</label>
+            <div className="space-y-3">
+              {/* File Upload */}
+              <label className="block cursor-pointer">
+                <div className="border-2 border-dashed border-white/20 hover:border-orange-500/50 rounded-xl p-6 text-center transition-all bg-white/5 hover:bg-white/10">
+                  <svg className="w-12 h-12 mx-auto mb-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-sm text-gray-400 mb-1">کلیک کنید یا تصویر را بکشید</p>
+                  <p className="text-xs text-gray-600">PNG, JPG, WEBP (حداکثر 5MB)</p>
+                </div>
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </label>
+              
+              {/* Image Preview */}
+              {form.image && (
+                <div className="relative rounded-xl overflow-hidden border border-white/10">
+                  <img src={form.image} alt="Preview" className="w-full h-48 object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, image: '' })}
+                    className="absolute top-2 left-2 w-8 h-8 bg-red-500/90 hover:bg-red-600 rounded-lg flex items-center justify-center text-white transition-all"
+                  >
+                    {IC.close}
+                  </button>
+                </div>
+              )}
+              
+              {/* Or URL Input */}
+              <div className="relative">
+                <div className="absolute inset-x-0 top-0 flex items-center justify-center">
+                  <span className="bg-gray-900 px-3 text-xs text-gray-500">یا</span>
+                </div>
+                <div className="pt-4">
+                  <input 
+                    type="url" 
+                    value={form.image?.startsWith('data:') ? '' : (form.image || '')} 
+                    onChange={e => setForm({ ...form, image: e.target.value })} 
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-orange-500/50" 
+                    placeholder="https://example.com/image.jpg" 
+                  />
+                </div>
+              </div>
+            </div>
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-sm text-gray-400 mb-1 block">کالری</label>
@@ -607,6 +663,355 @@ const SettingsPanel: React.FC = () => {
   );
 };
 
+// ─── Reports Section ───────────────────────────────────────
+const ReportsSection: React.FC = () => {
+  const { orders } = useStore();
+  const completedOrders = orders.filter(o => o.status === 'completed');
+  const totalRevenue = completedOrders.reduce((sum, o) => sum + o.total, 0);
+  const avgOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-black text-white">گزارشات و آمار</h2>
+        <p className="text-gray-400 text-sm mt-1">تحلیل عملکرد فروشگاه</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+          <p className="text-gray-400 text-sm mb-2">میانگین ارزش سفارش</p>
+          <p className="text-2xl font-black text-white">{formatPrice(Math.round(avgOrderValue))} ت</p>
+        </div>
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+          <p className="text-gray-400 text-sm mb-2">نرخ تکمیل سفارشات</p>
+          <p className="text-2xl font-black text-green-400">
+            {orders.length > 0 ? Math.round((completedOrders.length / orders.length) * 100) : 0}%
+          </p>
+        </div>
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+          <p className="text-gray-400 text-sm mb-2">نرخ لغو سفارشات</p>
+          <p className="text-2xl font-black text-red-400">
+            {orders.length > 0 ? Math.round((orders.filter(o => o.status === 'cancelled').length / orders.length) * 100) : 0}%
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+        <h3 className="text-lg font-bold text-white mb-4">عملکرد ماهانه</h3>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={[
+              { month: 'فروردین', revenue: 45000000 },
+              { month: 'اردیبهشت', revenue: 52000000 },
+              { month: 'خرداد', revenue: 48000000 },
+              { month: 'تیر', revenue: 61000000 },
+              { month: 'مرداد', revenue: 58000000 },
+              { month: 'شهریور', revenue: 67000000 },
+            ]}>
+              <defs>
+                <linearGradient id="colorRevenue2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="month" stroke="rgba(255,255,255,0.3)" fontSize={12} />
+              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} tickFormatter={v => `${(v / 1000000).toFixed(0)}M`} />
+              <Tooltip contentStyle={{ background: 'rgba(0,0,0,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', direction: 'rtl' }} />
+              <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fill="url(#colorRevenue2)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Coupons Section ───────────────────────────────────────
+interface Coupon {
+  id: number;
+  code: string;
+  discount: number;
+  type: string;
+  minOrder: number;
+  maxUses: number;
+  usedCount: number;
+  active: boolean;
+  expiresAt: string;
+}
+
+const CouponsSection: React.FC = () => {
+  const [coupons, setCoupons] = useState<Coupon[]>(() => {
+    const saved = localStorage.getItem('admin_coupons');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, code: 'WELCOME20', discount: 20, type: 'percent', minOrder: 100000, maxUses: 100, usedCount: 45, active: true, expiresAt: '2025-12-31' },
+      { id: 2, code: 'FREESHIP', discount: 35000, type: 'fixed', minOrder: 300000, maxUses: 50, usedCount: 12, active: true, expiresAt: '2025-12-31' },
+    ];
+  });
+
+  const saveCoupons = (data: typeof coupons) => {
+    setCoupons(data);
+    localStorage.setItem('admin_coupons', JSON.stringify(data));
+  };
+
+  const toggleCoupon = (id: number) => {
+    const updated = coupons.map((c: typeof coupons[0]) => c.id === id ? { ...c, active: !c.active } : c);
+    saveCoupons(updated);
+  };
+
+  const deleteCoupon = (id: number) => {
+    saveCoupons(coupons.filter((c: typeof coupons[0]) => c.id !== id));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-black text-white">مدیریت کوپن‌ها</h2>
+          <p className="text-gray-400 text-sm mt-1">{coupons.length} کوپن ثبت شده</p>
+        </div>
+        <button className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-orange-500/30">
+          {IC.plus} کوپن جدید
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {coupons.map(coupon => (
+          <div key={coupon.id} className="bg-white/5 rounded-2xl p-5 border border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${coupon.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                {IC.money}
+              </div>
+              <div>
+                <p className="font-bold text-white text-lg">{coupon.code}</p>
+                <p className="text-sm text-gray-400">
+                  {coupon.type === 'percent' ? `${coupon.discount}% تخفیف` : `${formatPrice(coupon.discount)} تومان تخفیف`}
+                  {' • '}حداقل سفارش: {formatPrice(coupon.minOrder)} ت
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {coupon.usedCount} از {coupon.maxUses} استفاده • انقضا: {coupon.expiresAt}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => toggleCoupon(coupon.id)} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${coupon.active ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'}`}>
+                {coupon.active ? 'فعال' : 'غیرفعال'}
+              </button>
+              <button onClick={() => deleteCoupon(coupon.id)} className="w-10 h-10 bg-red-500/10 hover:bg-red-500/20 rounded-xl flex items-center justify-center text-red-400 transition-all">
+                {IC.trash}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Reviews Section ───────────────────────────────────────
+const ReviewsSection: React.FC = () => {
+  const reviews = [
+    { id: 1, user: 'علی محمدی', product: 'دبل چیزبرگر', rating: 5, comment: 'عالی بود! طعم فوق‌العاده و ارسال سریع.', date: '2025-01-15', approved: true },
+    { id: 2, user: 'مریم احمدی', product: 'پیتزا پپرونی', rating: 4, comment: 'خوب بود ولی پنیر کم بود.', date: '2025-01-14', approved: true },
+    { id: 3, user: 'رضا کریمی', product: 'مرغ سوخاری', rating: 5, comment: 'بهترین مرغ سوخاری که خوردم!', date: '2025-01-13', approved: false },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-black text-white">مدیریت نظرات</h2>
+        <p className="text-gray-400 text-sm mt-1">{reviews.length} نظر ثبت شده</p>
+      </div>
+
+      <div className="space-y-3">
+        {reviews.map(review => (
+          <div key={review.id} className="bg-white/5 rounded-2xl p-5 border border-white/10">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold">
+                  {review.user[0]}
+                </div>
+                <div>
+                  <p className="font-bold text-white">{review.user}</p>
+                  <p className="text-xs text-gray-500">{review.product} • {review.date}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                {[...Array(review.rating)].map((_, i) => (
+                  <span key={i} className="text-amber-400">★</span>
+                ))}
+              </div>
+            </div>
+            <p className="text-gray-300 text-sm mb-3">{review.comment}</p>
+            <div className="flex items-center gap-2">
+              <button className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${review.approved ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'}`}>
+                {review.approved ? 'تایید شده' : 'در انتظار تایید'}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Categories Section ────────────────────────────────────
+const CategoriesSection: React.FC = () => {
+  const { products } = useStore();
+  const categories = [
+    { id: 'burger', name: 'برگر', count: products.filter(p => p.category === 'burger').length },
+    { id: 'pizza', name: 'پیتزا', count: products.filter(p => p.category === 'pizza').length },
+    { id: 'chicken', name: 'مرغ', count: products.filter(p => p.category === 'chicken').length },
+    { id: 'sandwich', name: 'ساندویچ', count: products.filter(p => p.category === 'sandwich').length },
+    { id: 'sides', name: 'پیش‌غذا', count: products.filter(p => p.category === 'sides').length },
+    { id: 'drink', name: 'نوشیدنی', count: products.filter(p => p.category === 'drink').length },
+    { id: 'dessert', name: 'دسر', count: products.filter(p => p.category === 'dessert').length },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-black text-white">مدیریت دسته‌بندی‌ها</h2>
+          <p className="text-gray-400 text-sm mt-1">{categories.length} دسته‌بندی</p>
+        </div>
+        <button className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-orange-500/30">
+          {IC.plus} دسته‌بندی جدید
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {categories.map(cat => (
+          <div key={cat.id} className="bg-white/5 rounded-2xl p-5 border border-white/10 flex items-center justify-between hover:bg-white/10 transition-all">
+            <div>
+              <p className="font-bold text-white text-lg">{cat.name}</p>
+              <p className="text-sm text-gray-400">{cat.count} محصول</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="w-9 h-9 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center text-gray-400 transition-all">
+                {IC.edit}
+              </button>
+              <button className="w-9 h-9 bg-red-500/10 hover:bg-red-500/20 rounded-lg flex items-center justify-center text-red-400 transition-all">
+                {IC.trash}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Notifications Section ─────────────────────────────────
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  active: boolean;
+  createdAt: string;
+}
+
+const NotificationsSection: React.FC = () => {
+  const [notifications, setNotifications] = useState<Notification[]>(() => {
+    const saved = localStorage.getItem('admin_notifications');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, title: 'تخفیف ویژه عید', message: '20% تخفیف روی همه محصولات', active: true, createdAt: '2025-01-15' },
+      { id: 2, title: 'ارسال رایگان', message: 'ارسال رایگان برای سفارش‌های بالای 500 هزار تومان', active: true, createdAt: '2025-01-10' },
+    ];
+  });
+
+  const saveNotifications = (data: Notification[]) => {
+    setNotifications(data);
+    localStorage.setItem('admin_notifications', JSON.stringify(data));
+  };
+
+  const toggleNotification = (id: number) => {
+    const updated = notifications.map((n: Notification) => n.id === id ? { ...n, active: !n.active } : n);
+    saveNotifications(updated);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-black text-white">مدیریت اعلان‌ها</h2>
+          <p className="text-gray-400 text-sm mt-1">{notifications.length} اعلان</p>
+        </div>
+        <button className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-5 py-2.5 rounded-xl font-bold shadow-lg shadow-orange-500/30">
+          {IC.plus} اعلان جدید
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {notifications.map(notif => (
+          <div key={notif.id} className="bg-white/5 rounded-2xl p-5 border border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${notif.active ? 'bg-blue-500/20 text-blue-400' : 'bg-gray-500/20 text-gray-400'}`}>
+                {IC.clock}
+              </div>
+              <div>
+                <p className="font-bold text-white">{notif.title}</p>
+                <p className="text-sm text-gray-400">{notif.message}</p>
+                <p className="text-xs text-gray-500 mt-1">{notif.createdAt}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={() => toggleNotification(notif.id)} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${notif.active ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'}`}>
+                {notif.active ? 'فعال' : 'غیرفعال'}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Activity Log Section ──────────────────────────────────
+const ActivityLogSection: React.FC = () => {
+  const { orders } = useStore();
+  const activities = [
+    ...orders.slice(0, 10).map(o => ({
+      id: o.id,
+      action: 'سفارش جدید',
+      description: `${o.customerName} سفارش ${formatPrice(o.total)} تومانی ثبت کرد`,
+      time: o.createdAt,
+      type: 'order',
+    })),
+    { id: 'sys1', action: 'ورود ادمین', description: 'ورود موفق به پنل مدیریت', time: new Date().toISOString(), type: 'system' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-black text-white">لاگ فعالیت‌ها</h2>
+        <p className="text-gray-400 text-sm mt-1">آخرین فعالیت‌های سیستم</p>
+      </div>
+
+      <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+        <div className="divide-y divide-white/5">
+          {activities.map(activity => (
+            <div key={activity.id} className="p-4 flex items-center gap-4 hover:bg-white/5 transition-all">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                activity.type === 'order' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'
+              }`}>
+                {activity.type === 'order' ? IC.orders : IC.check}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-white text-sm">{activity.action}</p>
+                <p className="text-xs text-gray-400 truncate">{activity.description}</p>
+              </div>
+              <div className="text-xs text-gray-500 flex-shrink-0">
+                {formatDate(activity.time)} {formatTime(activity.time)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Admin Panel ──────────────────────────────────────
 const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ onLogout, onBack }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -617,6 +1022,12 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
     { id: 'products', label: 'محصولات', icon: IC.products },
     { id: 'orders', label: 'سفارشات', icon: IC.orders },
     { id: 'users', label: 'کاربران', icon: IC.users },
+    { id: 'reports', label: 'گزارشات', icon: IC.trend },
+    { id: 'coupons', label: 'کوپن‌ها', icon: IC.money },
+    { id: 'reviews', label: 'نظرات', icon: IC.eye },
+    { id: 'categories', label: 'دسته‌بندی‌ها', icon: IC.box },
+    { id: 'notifications', label: 'اعلان‌ها', icon: IC.clock },
+    { id: 'activity', label: 'لاگ فعالیت', icon: IC.check },
     { id: 'settings', label: 'تنظیمات', icon: IC.settings },
   ];
 
@@ -626,6 +1037,12 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
       case 'products': return <ProductsManagement />;
       case 'orders': return <OrdersManagement />;
       case 'users': return <UsersManagement />;
+      case 'reports': return <ReportsSection />;
+      case 'coupons': return <CouponsSection />;
+      case 'reviews': return <ReviewsSection />;
+      case 'categories': return <CategoriesSection />;
+      case 'notifications': return <NotificationsSection />;
+      case 'activity': return <ActivityLogSection />;
       case 'settings': return <SettingsPanel />;
       default: return <DashboardOverview />;
     }
@@ -676,8 +1093,8 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
                   w-full flex items-center gap-3 px-4 py-3 rounded-xl 
                   text-sm font-bold transition-all duration-200
                   ${activeTab === tab.id
-                    ? 'bg-gradient-to-r from-orange-500/20 to-red-600/20 text-orange-400 border border-orange-500/30 shadow-lg shadow-orange-500/10'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30'
+                    : 'text-gray-300 hover:text-white hover:bg-white/10'
                   }
                 `}
               >
