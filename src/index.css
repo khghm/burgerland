@@ -428,3 +428,23 @@ body {
   0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
   50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
 }
+
+/* ─── Select & Option Styling ─────────────────────────────── */
+@layer base {
+  select {
+    color-scheme: dark;
+  }
+  
+  select option {
+    background-color: #18181b;
+    color: #fafafa;
+    padding: 0.5rem;
+  }
+  
+  select option:hover,
+  select option:checked {
+    background-color: #f97316;
+    color: white;
+    font-weight: 600;
+  }
+}

@@ -758,12 +758,28 @@ const App: React.FC = () => {
             <div className="w-full overflow-x-auto">
               <CategoryBar categories={categories} active={activeCategory} onChange={setActiveCategory} />
             </div>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} className="bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm text-white outline-none focus:border-orange-500/50 transition-colors cursor-pointer flex-shrink-0">
-              <option value="default">مرتب‌سازی: پیش‌فرض</option>
-              <option value="price-asc">ارزان‌ترین</option>
-              <option value="price-desc">گران‌ترین</option>
-              <option value="rating">بیشترین امتیاز</option>
-            </select>
+            <div className="relative flex-shrink-0">
+              <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)} 
+                className="appearance-none bg-gradient-to-r from-orange-500/10 to-red-600/10 border border-orange-500/30 hover:border-orange-500/60 rounded-2xl pl-10 pr-5 py-3 text-sm font-bold text-white outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all cursor-pointer"
+              >
+                <option value="default" className="bg-gray-900 text-white">مرتب‌سازی: پیش‌فرض</option>
+                <option value="price-asc" className="bg-gray-900 text-white">ارزان‌ترین</option>
+                <option value="price-desc" className="bg-gray-900 text-white">گران‌ترین</option>
+                <option value="rating" className="bg-gray-900 text-white">بیشترین امتیاز</option>
+              </select>
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-orange-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+                </svg>
+              </div>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-orange-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           {filtered.length > 0 ? (
