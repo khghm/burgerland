@@ -288,8 +288,22 @@ export const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setCategories(prev => [...prev, cat]);
     addLog('افزودن دسته‌بندی', `دسته‌بندی "${c.name}" اضافه شد`, 'product');
   };
-  const updateCategory = (c: Category) => { setCategories(prev => prev.map(x => x.id === c.id ? c : x)); };
-  const deleteCategory = (id: string) => { setCategories(prev => prev.filter(x => x.id !== id)); };
+  const updateCategory = (c: Category) => { setCategories(prev => prev.map(x => x.id === c.id ? c : x)); addLog('ویرایش دسته‌بندی', `دسته‌بندی "${c.name}" ویرایش شد`, 'product'); };
+  const deleteCategory = (id: string) => {
+    const c = categories.find(x => x.id === id);
+    const productsInCategory = products.filter(p => p.category === id);
+    
+    if (productsInCategory.length > 0) {
+      // Move products to first available active category
+      const fallbackCategory = categories.find(cat => cat.id !== id && cat.active)?.id || 'uncategorized';
+      setProducts(prev => prev.map(p => p.category === id ? { ...p, category: fallbackCategory } : p));
+      addLog('حذف دسته‌بندی', `دسته‌بندی "${c?.name}" حذف شد و ${productsInCategory.length} محصول منتقل شدند`, 'product');
+    } else {
+      addLog('حذف دسته‌بندی', `دسته‌بندی "${c?.name}" حذف شد`, 'product');
+    }
+    
+    setCategories(prev => prev.filter(x => x.id !== id));
+  };
 
   // Notifications
   const addNotification = (n: Omit<Notification, 'id' | 'createdAt'>) => {

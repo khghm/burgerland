@@ -85,7 +85,9 @@ const AdminLogin: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
 
 // ─── Product Form ──────────────────────────────────────────
 const ProductForm: React.FC<{ product: Product | null; onSave: (p: Product) => void; onClose: () => void }> = ({ product, onSave, onClose }) => {
-  const [form, setForm] = useState<Partial<Product>>(product || { name: '', description: '', price: 0, image: '', category: 'burger', rating: 4.5, reviews: 0, calories: 0, prepTime: '', ingredients: [] });
+  const { categories } = useStore();
+  const activeCategories = categories.filter(c => c.active);
+  const [form, setForm] = useState<Partial<Product>>(product || { name: '', description: '', price: 0, image: '', category: activeCategories[0]?.id || 'burger', rating: 4.5, reviews: 0, calories: 0, prepTime: '', ingredients: [] });
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) { const r = new FileReader(); r.onloadend = () => setForm({ ...form, image: r.result as string }); r.readAsDataURL(file); }
@@ -114,9 +116,15 @@ const ProductForm: React.FC<{ product: Product | null; onSave: (p: Product) => v
             </div>
             <div>
               <label className="text-sm text-gray-400 mb-1 block">دسته‌بندی</label>
-              <select value={form.category || 'burger'} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-orange-500/50">
-                <option value="burger">برگر</option><option value="pizza">پیتزا</option><option value="chicken">مرغ</option><option value="sandwich">ساندویچ</option><option value="sides">پیش‌غذا</option><option value="drink">نوشیدنی</option><option value="dessert">دسر</option>
+              <select value={form.category || ''} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-orange-500/50" required>
+                <option value="" disabled>انتخاب دسته‌بندی...</option>
+                {activeCategories.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
               </select>
+              {activeCategories.length === 0 && (
+                <p className="text-xs text-red-400 mt-2">هیچ دسته‌بندی فعالی وجود ندارد. لطفاً ابتدا دسته‌بندی ایجاد کنید.</p>
+              )}
             </div>
           </div>
           <div>
@@ -429,7 +437,16 @@ const CategoriesManagement: React.FC = () => {
                   <button onClick={() => updateCategory({ ...c, active: !c.active })} className={`w-8 h-8 rounded-lg flex items-center justify-center ${c.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={c.active ? "M5 13l4 4L19 7" : "M6 18L18 6M6 6l12 12"} /></svg>
                   </button>
-                  <button onClick={() => { if (confirm('حذف؟')) deleteCategory(c.id); }} className="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center text-red-400">{IC.trash}</button>
+                  <button onClick={() => {
+                    const productsInCategory = products.filter(p => p.category === c.id);
+                    if (productsInCategory.length > 0) {
+                      if (confirm(`این دسته‌بندی ${productsInCategory.length} محصول دارد. با حذف آن، محصولات به دسته‌بندی دیگر منتقل می‌شوند. ادامه می‌دهید؟`)) {
+                        deleteCategory(c.id);
+                      }
+                    } else {
+                      if (confirm('حذف شود؟')) deleteCategory(c.id);
+                    }
+                  }} className="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center text-red-400">{IC.trash}</button>
                 </div>
               </div>
             </div>
