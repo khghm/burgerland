@@ -632,7 +632,7 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
   };
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="bg-black">
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
@@ -649,8 +649,7 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
           border-l border-white/10 
           z-50 
           transition-all duration-300 ease-in-out
-          lg:sticky lg:top-0
-          ${sidebarOpen ? 'translate-x-0' : 'translate-x-[100%] lg:translate-x-0'}
+          ${sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
         `}
       >
         <div className="flex flex-col h-full">
@@ -709,9 +708,9 @@ const AdminPanel: React.FC<{ onLogout: () => void; onBack: () => void }> = ({ on
       </aside>
 
       {/* Main Content */}
-      <main className="lg:mr-64 min-h-screen">
+      <main className="lg:mr-64">
         {/* Top Bar */}
-        <div className="sticky top-0 z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
+        <div className="z-30 bg-black/90 backdrop-blur-xl border-b border-white/10">
           <div className="px-4 lg:px-8 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0">
