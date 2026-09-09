@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -37,16 +38,17 @@
     scroll-behavior: smooth;
   }
 
-  body {
-    font-family: 'Vazirmatn', system-ui, sans-serif;
-    direction: rtl;
-    background: #09090b;
-    color: #fafafa;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
+body {
+  font-family: 'Vazirmatn', 'Noto Naskh Arabic', system-ui, sans-serif;
+  direction: rtl;
+  background: #09090b;
+  color: #fafafa;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  text-rendering: optimizeLegibility;
+}
   ::selection {
     background: rgba(249, 115, 22, 0.3);
     color: #fff;
