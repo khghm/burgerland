@@ -224,23 +224,26 @@ const Header: React.FC<{ cartCount: number; onCartOpen: () => void; searchQuery:
             <button className="hidden md:flex items-center gap-2 text-sm font-medium text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-xl hover:bg-white/5">
               {I.user}<span className="hidden xl:inline">حساب من</span>
             </button>
-            <MagneticButton onClick={onCartOpen} className="relative flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl shadow-lg shadow-orange-500/30 ripple overflow-visible">
-              {I.cart}
-              <span className="text-sm font-bold hidden sm:inline">سبد خرید</span>
+            <div className="relative">
+              <MagneticButton onClick={onCartOpen} className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl shadow-lg shadow-orange-500/30 ripple">
+                {I.cart}
+                <span className="text-sm font-bold hidden sm:inline">سبد خرید</span>
+              </MagneticButton>
               <AnimatePresence>
                 {cartCount > 0 && (
                   <motion.span
+                    key="badge"
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0, opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                    className="absolute -top-2 -right-2 min-w-[24px] h-6 px-1.5 bg-white text-orange-600 text-xs font-black rounded-full flex items-center justify-center shadow-xl border-2 border-orange-500"
+                    className="absolute -top-2 -right-2 min-w-[24px] h-6 px-1.5 bg-white text-orange-600 text-xs font-black rounded-full flex items-center justify-center shadow-xl border-2 border-orange-500 z-50"
                   >
                     {cartCount}
                   </motion.span>
                 )}
               </AnimatePresence>
-            </MagneticButton>
+            </div>
           </div>
         </div>
 
